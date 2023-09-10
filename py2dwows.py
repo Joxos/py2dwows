@@ -105,15 +105,15 @@ class Ship(arcade.Sprite):
         self.angle = round(self.angle, round_digits)
 
         # boarder
-        if self.left < 0:
-            self.left = 0
-        elif self.right > window_width - 1:
-            self.right = window_width - 1
+        if self.center_x < 0:
+            self.center_x = 0
+        elif self.center_x > window_width - 1:
+            self.center_x = window_width - 1
 
-        if self.bottom < 0:
-            self.bottom = 0
-        elif self.top > window_height - 1:
-            self.top = window_height - 1
+        if self.center_y < 0:
+            self.center_y = 0
+        elif self.center_y > window_height - 1:
+            self.center_y = window_height - 1
 
 
 class Py2dwows(arcade.Window):
