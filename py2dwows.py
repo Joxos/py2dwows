@@ -31,7 +31,7 @@ def accelerate(current_speed, acceleration, friction, target_speed):
             return target_speed
     elif current_speed > target_speed:
         loss = target_speed - current_speed
-        if abs(loss) >= abs(friction):
+        if loss <= friction:
             return current_speed + friction
         else:
             return target_speed
