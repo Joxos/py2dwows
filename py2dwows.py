@@ -56,23 +56,15 @@ class Ship(arcade.Sprite):
         self.friction = friction
 
     def forward(self):
-        if self.gear < 4:
-            self.gear += 1
-        if self.gear == GEAR.NEUTRAL:
-            # exclude division by zero
-            self.target_speed = 0
-        else:
-            self.target_speed = self.max_speed / self.gear
+        if self.gear.value < 4:
+            self.gear = GEAR(self.gear.value + 1)
+            self.target_speed = self.max_speed * self.gear.value / 4
         print(f'Now in {self.gear.name}')
 
     def backward(self):
-        if self.gear > -1:
-            self.gear -= 1
-        if self.gear == GEAR.NEUTRAL:
-            # exclude division by zero
-            self.target_speed = 0
-        else:
-            self.target_speed = self.max_speed / self.gear
+        if self.gear.value > -1:
+            self.gear = GEAR(self.gear.value - 1)
+            self.target_speed = self.max_speed * self.gear.value / 4
         print(f'Now in {self.gear.name}')
 
     def update(self):
@@ -125,8 +117,8 @@ class Py2dwows(arcade.Window):
         self.ship_list = arcade.SpriteList()
         self.player_ship = Ship(filename='resources/myoko.jpg',
                                 max_speed=9,
-                                acceleration=0.1,
-                                friction=0.085,
+                                acceleration=0.01,
+                                friction=0.03,
                                 scale=0.167)
         self.player_ship.center_x = 50
         self.player_ship.center_y = 50
@@ -141,11 +133,9 @@ class Py2dwows(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.W:
-            self.player_ship.target_speed += round(
-                self.player_ship.max_speed / 4, round_digits)
+            self.player_ship.forward()
         elif key == arcade.key.S:
-            self.player_ship.target_speed -= round(
-                self.player_ship.max_speed / 4, round_digits)
+            self.player_ship.backward()
         elif key == arcade.key.Q:
             self.player_ship.change_angle += 1
         elif key == arcade.key.E:
