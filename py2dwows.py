@@ -20,6 +20,23 @@ class GEAR(Enum):
     FULL = 4
 
 
+def accelerate(current_speed, acceleration, friction, target_speed):
+    if current_speed < 0:
+        acceleration, friction = -friction, -acceleration
+    if current_speed < target_speed:
+        loss = target_speed - current_speed
+        if loss >= acceleration:
+            return current_speed + acceleration
+        else:
+            return target_speed
+    elif current_speed > target_speed:
+        loss = target_speed - current_speed
+        if abs(loss) >= abs(friction):
+            return current_speed + friction
+        else:
+            return target_speed
+
+
 class Ship(arcade.Sprite):
 
     def __init__(self,
@@ -69,17 +86,13 @@ class Ship(arcade.Sprite):
 
     def update(self):
         if self.current_speed < self.target_speed:
-            loss = self.target_speed - self.current_speed
-            if loss >= self.acceleration:
-                self.current_speed += self.acceleration
-            else:
-                self.current_speed = self.target_speed
+            self.current_speed = accelerate(self.current_speed,
+                                            self.acceleration, self.friction,
+                                            self.target_speed)
         elif self.current_speed > self.target_speed:
-            loss = self.current_speed - self.target_speed
-            if loss >= self.friction:
-                self.current_speed -= self.friction
-            else:
-                self.current_speed = self.target_speed
+            self.current_speed = accelerate(self.current_speed,
+                                            self.acceleration, self.friction,
+                                            self.target_speed)
         self.center_x += self.current_speed * math.cos(math.radians(
             self.angle))
         self.center_y += self.current_speed * math.sin(math.radians(
@@ -118,7 +131,7 @@ class Py2dwows(arcade.Window):
         self.player_ship = Ship(filename='resources/myoko.jpg',
                                 max_speed=9,
                                 acceleration=0.01,
-                                friction=0.03,
+                                friction=-0.03,
                                 scale=0.167)
         self.player_ship.center_x = 50
         self.player_ship.center_y = 50
